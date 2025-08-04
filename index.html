@@ -1,87 +1,137 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Liste des Inscriptions</title>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulaire d'inscription</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f0f0f0;
-      padding: 20px;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+      padding: 10px;
     }
 
-    h1 {
+    .formulaire {
+      background-color: #ffffff;
+      max-width: 400px;
+      width: 90%;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    h2 {
       text-align: center;
+      color: #004d99;
+      margin-bottom: 25px;
     }
 
-    .inscription {
-      background: white;
-      border-radius: 10px;
-      padding: 15px;
-      margin-bottom: 15px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-
-    .inscription strong {
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
       color: #333;
     }
-  </style>
-</head>
-<body>
-  <h1>Inscriptions enregistrées</h1>
-  <div id="liste-inscriptions"></div>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    input[type="text"],
+    input[type="email"],
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1.5px solid #007acc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .radio-group,
+    .statut-group {
+      margin-top: 10px;
+    }
+
+    .radio-group label,
+    .statut-group label {
+      display: inline-block;
+      margin-right: 15px;
+      font-weight: normal;
+    }
+
+    input[type="radio"] {
+      margin-right: 5px;
+    }
+
+    #autreStatutInput {
+      display: none;
+      margin-top: 10px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 25px;
+      padding: 12px;
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: green;
+    }
+  </style>
 
   <script>
-    // Configuration Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyAd5gqzLhq3eJHm1n_kZZGfLqzWQIvSaa4",
-      authDomain: "ich-inscription.firebaseapp.com",
-      projectId: "ich-inscription",
-      storageBucket: "ich-inscription.appspot.com",
-      messagingSenderId: "155306193375",
-      appId: "1:155306193375:web:2b0fb492f87fabaec3d46a"
-    };
-
-    // Initialiser Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    // Charger les inscriptions
-    db.collection("inscriptions").orderBy("date", "desc").get().then(snapshot => {
-      const liste = document.getElementById("liste-inscriptions");
-
-      if (snapshot.empty) {
-        liste.innerHTML = "<p>Aucune inscription trouvée.</p>";
-        return;
-      }
-
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const div = document.createElement("div");
-        div.className = "inscription";
-        div.innerHTML = `
-          <p><strong>Nom :</strong> ${data.nom}</p>
-          <p><strong>Âge :</strong> ${data.age}</p>
-          <p><strong>Genre :</strong> ${data.genre}</p>
-          <p><strong>Commune :</strong> ${data.commune}</p>
-          <p><strong>Contact :</strong> ${data.contact}</p>
-          <p><strong>Statut :</strong> ${data.statut}</p>
-          ${data.etablissement ? `<p><strong>Établissement :</strong> ${data.etablissement}</p>` : ""}
-          ${data.niveau ? `<p><strong>Niveau :</strong> ${data.niveau}</p>` : ""}
-          ${data.domaine ? `<p><strong>Domaine :</strong> ${data.domaine}</p>` : ""}
-          <p><strong>Date :</strong> ${new Date(data.date.seconds * 1000).toLocaleString()}</p>
-        `;
-        liste.appendChild(div);
-      });
-    }).catch(error => {
-      console.error("Erreur de récupération :", error);
-      document.getElementById("liste-inscriptions").innerHTML = "<p>Erreur lors du chargement.</p>";
-    });
+    function afficherChampAutre() {
+      const autreRadio = document.getElementById("autreStatut");
+      const champAutre = document.getElementById("autreStatutInput");
+      champAutre.style.display = autreRadio.checked ? "block" : "none";
+    }
   </script>
+</head>
+<body>
+
+  <div class="formulaire">
+    <h2>Inscription</h2>
+
+    <form action="mailto:caporalnivaille@gmail.com" method="post" enctype="text/plain">
+      <label for="email">Email :</label>
+      <input type="email" id="email" name="Email" placeholder="exemple@domaine.com" required>
+
+      <label for="commune">Commune :</label>
+      <input type="text" id="commune" name="Commune" placeholder="Ex: Yopougon" required>
+
+      <label>Genre :</label>
+      <div class="radio-group">
+        <label><input type="radio" name="Genre" value="Homme" required> Homme</label>
+        <label><input type="radio" name="Genre" value="Femme"> Femme</label>
+      </div>
+
+      <label for="domaine">Domaine d'activité :</label>
+      <input type="text" id="domaine" name="Domaine" placeholder="Ex: Électricité, Informatique..." required>
+
+      <label>Statut académique :</label>
+      <div class="statut-group">
+        <label><input type="radio" name="Statut" value="Élevé" onclick="afficherChampAutre()" required> Élevé</label>
+        <label><input type="radio" name="Statut" value="Étudiant" onclick="afficherChampAutre()"> Étudiant</label>
+        <label><input type="radio" id="autreStatut" name="Statut" value="Autre" onclick="afficherChampAutre()"> Autre</label>
+      </div>
+
+      <div id="autreStatutInput">
+        <input type="text" name="Statut_autre" placeholder="Précisez votre statut">
+      </div>
+
+      <button type="submit">Envoyer</button>
+    </form>
+  </div>
+
 </body>
 </html>
